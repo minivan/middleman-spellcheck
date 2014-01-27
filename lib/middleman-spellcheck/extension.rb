@@ -4,6 +4,7 @@ require 'nokogiri'
 module Middleman
   module Spellcheck
     class SpellcheckExtension < Extension
+      REJECTED_EXTS = %w(.css)
       option :page, "/*", "Run only pages that match the regex through the spellchecker"
       option :tags, [], "Run spellcheck only on some tags from the output"
       option :allow, [], "Allow specific words to be misspelled"
@@ -55,6 +56,7 @@ module Middleman
 
       def filter_resources(app, pattern)
         app.sitemap.resources.select { |resource| resource.url.match(pattern) }
+                             .reject { |resource| REJECTED_EXTS.include? resource.ext }
       end
 
       def run_check(text, dictionary="en")
