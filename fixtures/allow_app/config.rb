@@ -1,0 +1,1 @@
+activate :spellcheck, allow: ["dolan"]

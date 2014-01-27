@@ -6,6 +6,7 @@ module Middleman
     class SpellcheckExtension < Extension
       option :page, "/*", "Run only pages that match the regex through the spellchecker"
       option :tags, [], "Run spellcheck only on some tags from the output"
+      option :allow, [], "Allow specific words to be misspelled"
 
       def after_build(builder)
         filtered = filter_resources(app, options.page)
@@ -58,7 +59,21 @@ module Middleman
 
       def run_check(text, dictionary="en")
         results = Spellchecker.check(text, dictionary)
+        results = exclude_allowed(results)
         results.reject { |entry| entry[:correct] }
+      end
+
+      def exclude_allowed(results)
+        results.reject { |entry| option_allowed.include? entry[:original].downcase }
+      end
+
+      def option_allowed
+        allowed = if options.allow.is_a? Array
+                    options.allow
+                  else
+                    [options.allow]
+                  end
+        allowed.map(&:downcase)
       end
 
       def error_message(misspell)
