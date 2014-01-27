@@ -3,8 +3,10 @@ require 'spellchecker'
 module Middleman
   module Spellcheck
     class SpellcheckExtension < Extension
+      option :page, "/*", "Run only pages that match the regex through the spellchecker"
+
       def after_build(builder)
-        filtered = filter_resources(app, "/")
+        filtered = filter_resources(app, options.page)
         total_misspelled = []
 
         filtered.each do |resource|
