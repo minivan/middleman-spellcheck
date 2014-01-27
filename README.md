@@ -1,4 +1,4 @@
-# Middleman::Spellcheck
+# Middleman-Spellchecker
 
 Run a spell checker job after the app is built. Requires 'aspell'.
 
@@ -43,3 +43,7 @@ activate :spellcheck, allow: ["Gooby", "pls"]
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+## Thanks
+
+Special thanks to [Readbeard-Tech](https://rubygems.org/profiles/redbeard-tech) for the [spellchecker](https://rubygems.org/gems/spellchecker) gem, which this code is based upon.
