@@ -1,4 +1,4 @@
-require 'spellchecker'
+require 'middleman-spellcheck/spellchecker'
 require 'nokogiri'
 
 module Middleman
