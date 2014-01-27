@@ -1,10 +1,11 @@
 require 'middleman-spellcheck/spellchecker'
-require 'pry-debugger'
 
 module Middleman
-  module Spellcheck < Extension
-    def after_build(builder)
-      binding.pry
+  module Spellcheck
+    class SpellcheckExtension < Extension
+      def after_build(builder)
+        p "I'm here"
+      end
     end
   end
 end

@@ -3,5 +3,5 @@ require "middleman-spellcheck/version"
 
 ::Middleman::Extensions.register(:spellcheck) do
     require "middleman-spellcheck/extension"
-      ::Middleman::Spellcheck
+      ::Middleman::Spellcheck::SpellcheckExtension
 end
