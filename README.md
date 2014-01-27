@@ -1,6 +1,6 @@
 # Middleman::Spellcheck
 
-TODO: Write a gem description
+Run a spell checker job after the app is built. Requires 'aspell'.
 
 ## Installation
 
@@ -12,13 +12,29 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
+Add the following to middleman's `config.rb`:
 
-    $ gem install middleman-spellcheck
+    activate :spellcheck
 
 ## Usage
 
-TODO: Write usage instructions here
+You can spellcheck only some resources using a regex with the URL:
+
+```ruby
+activate :spellcheck, page: "documentation/*" # you can use regexes, too, e.g. /post_[1-9]/
+```
+
+You can limit which tags the spell checker will only run through:
+
+```ruby
+activate :spellcheck, tags: :p  # pass an array of tags if you have more!
+```
+
+If there are some words that you would like to be allowed
+
+```ruby
+activate :spellcheck, allow: ["Gooby", "pls"]
+```
 
 ## Contributing
 
