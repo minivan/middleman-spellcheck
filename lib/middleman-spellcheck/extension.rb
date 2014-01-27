@@ -8,10 +8,10 @@ module Middleman
         total_misspelled = []
 
         filtered.each do |resource|
-          builder.shell.say("Running spell checker for #{resource.url}")
+          builder.say_status :spellcheck, "Running spell checker for #{resource.url}", :blue
           current_misspelled = run_check(resource.render(layout: false))
           current_misspelled.each do |misspell|
-            builder.shell.say(error_message(misspell))
+            builder.say_status :misspell, error_message(misspell), :red
           end
           total_misspelled += current_misspelled
         end
