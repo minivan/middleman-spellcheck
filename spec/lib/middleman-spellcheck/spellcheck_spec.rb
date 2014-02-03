@@ -6,9 +6,9 @@ describe Spellchecker do
   let(:result) { Spellchecker.check(text) }
 
   it "can spell check words" do
-    result.should == { "hello" => :correct,
-                       "world" => :correct,
-                       "of"    => :correct,
-                       "txet"  => :incorrect }
+    result.should == [{ word: "hello", correct: true },
+                      { word: "world", correct: true },
+                      { word: "of", correct: true },
+                      { word: "txet", correct: false }]
   end
 end

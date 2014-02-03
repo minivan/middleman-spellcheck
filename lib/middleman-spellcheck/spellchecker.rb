@@ -15,16 +15,16 @@ class Spellchecker
     result.split("\n")[1..-1]
   end
 
-  def self.transform_result(result_string)
-    result_string == "*" ? :correct : :incorrect
+  def self.correct?(result_string)
+    result_string == "*"
   end
 
   def self.check(text, lang='en')
     words   = text.split(/\W+/)
     results = query(text, lang).map do |query_result|
-      transform_result(query_result)
+      correct?(query_result)
     end
 
-    Hash[*words.zip(results).flatten]
+    words.zip(results).map {|word, correctness| { word: word, correct: correctness } }
   end
 end
