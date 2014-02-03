@@ -66,7 +66,7 @@ module Middleman
       end
 
       def exclude_allowed(results)
-        results.reject { |entry| option_allowed.include? entry[:original].downcase }
+        results.reject { |entry| option_allowed.include? entry[:word].downcase }
       end
 
       def option_allowed
@@ -79,7 +79,7 @@ module Middleman
       end
 
       def error_message(misspell)
-        "The word '#{misspell[:original]}' is misspelled"
+        "The word '#{misspell[:word]}' is misspelled"
       end
     end
   end
