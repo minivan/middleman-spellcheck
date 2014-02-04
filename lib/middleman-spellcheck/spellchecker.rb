@@ -12,7 +12,7 @@ class Spellchecker
   def self.query(text, lang='en')
     result = `echo "#{text}" | #{@@aspell_path} -a -l #{lang}`
     raise 'Aspell command not found' unless result
-    result.split("\n")[1..-1]
+    result.split("\n")[1..-1] || []
   end
 
   def self.correct?(result_string)
