@@ -49,4 +49,14 @@ describe Spellchecker do
                         { word: "page", correct: true }]
     end
   end
+
+  context "with dashes" do
+    let(:text) { "A user-defined entity" }
+
+    it "whitelists the word" do
+      result.should == [{ word: "A", correct: true },
+                        { word: "user-defined", correct: true },
+                        { word: "entity", correct: true }]
+    end
+  end
 end
