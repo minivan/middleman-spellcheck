@@ -10,22 +10,19 @@ class Spellchecker
   end
 
   def self.query(text, lang='en')
-    result = `echo "#{format_text(text)}" | #{@@aspell_path} -a -l #{lang}`
+    result = `echo "#{text}" | #{@@aspell_path} -a -l #{lang}`
     raise 'Aspell command not found' unless result
-    result.split("\n")[1..-1] || []
+    new_result = result.split("\n")
+    new_result[1..-1] || []
   end
 
   def self.correct?(result_string)
     result_string == "*"
   end
 
-  def self.format_text(text)
-    text.gsub("\n", "")
-  end
-
   def self.check(text, lang='en')
-    words   = text.split(/\W+/)
-    results = query(text, lang).map do |query_result|
+    words   = text.split(/[^A-Za-z']+/)
+    results = query(words.join(" "), lang).map do |query_result|
       correct?(query_result)
     end
 
