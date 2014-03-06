@@ -50,13 +50,13 @@ describe Spellchecker do
     end
   end
 
-  context "with dashes" do
-    let(:text) { "A user-defined entity" }
+  context "with backticks" do
+    let(:text) { "A user’s page" }
 
     it "whitelists the word" do
       result.should == [{ word: "A", correct: true },
-                        { word: "user-defined", correct: true },
-                        { word: "entity", correct: true }]
+                        { word: "user’s", correct: true },
+                        { word: "page", correct: true }]
     end
   end
 end
