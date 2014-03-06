@@ -4,7 +4,7 @@ require 'nokogiri'
 module Middleman
   module Spellcheck
     class SpellcheckExtension < Extension
-      REJECTED_EXTS = %w(.css)
+      REJECTED_EXTS = %w(.css .js .coffee)
       option :page, "/*", "Run only pages that match the regex through the spellchecker"
       option :tags, [], "Run spellcheck only on some tags from the output"
       option :allow, [], "Allow specific words to be misspelled"
