@@ -21,7 +21,7 @@ class Spellchecker
   end
 
   def self.check(text, lang='en')
-    words   = text.split(/[^A-Za-z'\-]+/)
+    words   = text.split(/[^A-Za-z’']+/)
     results = query(words.join(" "), lang).map do |query_result|
       correct?(query_result)
     end
