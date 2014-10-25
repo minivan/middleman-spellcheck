@@ -8,6 +8,7 @@ module Middleman
       option :page, "/*", "Run only pages that match the regex through the spellchecker"
       option :tags, [], "Run spellcheck only on some tags from the output"
       option :allow, [], "Allow specific words to be misspelled"
+      option :ignored_exts, [], "Ignore specific extensions (ex: '.xml')"
 
       def after_build(builder)
         filtered = filter_resources(app, options.page)
@@ -56,7 +57,7 @@ module Middleman
 
       def filter_resources(app, pattern)
         app.sitemap.resources.select { |resource| resource.url.match(pattern) }
-                             .reject { |resource| REJECTED_EXTS.include? resource.ext }
+                             .reject { |resource| option_ignored_exts.include? resource.ext }
       end
 
       def run_check(text, dictionary="en")
@@ -76,6 +77,15 @@ module Middleman
                     [options.allow]
                   end
         allowed.map(&:downcase)
+      end
+
+      def option_ignored_exts
+        ignored_exts = if options.ignored_exts.is_a? Array
+                         options.ignored_exts
+                       else
+                         [options.ignored_exts]
+                       end
+        REJECTED_EXTS + ignored_exts
       end
 
       def error_message(misspell)

@@ -36,6 +36,14 @@ If there are some words that you would like to be allowed
 activate :spellcheck, allow: ["Gooby", "pls"]
 ```
 
+Middleman-spellcheck automatically ignores `.css`, `.js`, & `.coffee` file
+extensions. If there are some additional file type extensions that you would
+like to skip:
+
+```ruby
+activate :spellcheck, ignored_exts: [".xml", ".png"]
+```
+
 ## Contributing
 
 1. Fork it
