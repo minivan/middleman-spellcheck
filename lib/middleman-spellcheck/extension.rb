@@ -61,8 +61,8 @@ module Middleman
                              .reject { |resource| option_ignored_exts.include? resource.ext }
       end
 
-      def run_check(text, dictionary="en")
-        results = Spellchecker.check(text, dictionary)
+      def run_check(text, lang)
+        results = Spellchecker.check(text, lang)
         results = exclude_allowed(results)
         results.reject { |entry| entry[:correct] }
       end
