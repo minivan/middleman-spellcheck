@@ -9,6 +9,7 @@ module Middleman
       option :tags, [], "Run spellcheck only on some tags from the output"
       option :allow, [], "Allow specific words to be misspelled"
       option :ignored_exts, [], "Ignore specific extensions (ex: '.xml')"
+      option :lang, "en", "Language for spellchecking"
 
       def after_build(builder)
         filtered = filter_resources(app, options.page)
@@ -16,7 +17,7 @@ module Middleman
 
         filtered.each do |resource|
           builder.say_status :spellcheck, "Running spell checker for #{resource.url}", :blue
-          current_misspelled = run_check(select_content(resource))
+          current_misspelled = run_check(select_content(resource), options.lang)
           current_misspelled.each do |misspell|
             builder.say_status :misspell, error_message(misspell), :red
           end
