@@ -9,7 +9,7 @@ class Spellchecker
     @@aspell_path
   end
 
-  def self.query(text, lang='en')
+  def self.query(text, lang)
     result = `echo "#{text}" | #{@@aspell_path} -a -l #{lang}`
     raise 'Aspell command not found' unless result
     new_result = result.split("\n")
@@ -20,7 +20,7 @@ class Spellchecker
     result_string == "*"
   end
 
-  def self.check(text, lang='en')
+  def self.check(text, lang)
     # join then re-split the word list to get a consistent word count,
     # because sometimes there's a "" (blank) word in the array that gets lost,
     # which makes the maps not equal, leading to an off by one type issue, where
