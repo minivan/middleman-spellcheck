@@ -12,6 +12,7 @@ module Middleman
       option :lang, "en", "Language for spellchecking"
       option :cmdargs, "", "Pass alternative command line arguments"
       option :debug, 0, "Enable debugging (for developers only)"
+      option :dontfail, 0, "Don't fail when misspelled words are found"
 
       def after_build(builder)
         Spellchecker.cmdargs=(options.cmdargs)
@@ -29,7 +30,13 @@ module Middleman
         end
 
         unless total_misspelled.empty?
-          raise Thor::Error, "Build failed. There are spelling errors."
+	  estr = "Build failed. There are spelling errors."
+	  if options.dontfail
+	    print "== :dontfail set! Will issue warning only, but not fail.\n"
+	    print estr, "\n"
+	  else
+            raise Thor::Error, estr
+	  end
         end
       end
 
