@@ -1,5 +1,6 @@
 class Spellchecker
   @@aspell_path = "aspell"
+  @@aspell_cmdargs = ""
 
   def self.aspell_path=(path)
     @@aspell_path = path
@@ -9,8 +10,20 @@ class Spellchecker
     @@aspell_path
   end
 
+  def self.cmdargs=(args)
+    @@aspell_cmdargs = args
+  end
+
+  def self.cmdargs
+    @@aspell_cmdargs
+  end
+
   def self.query(text, lang)
-    result = `echo "#{text}" | #{@@aspell_path} -a -l #{lang}`
+    args = "-a -l #{lang}"
+    if @@aspell_cmdargs != ""
+      args = @@aspell_cmdargs
+    end
+    result = `echo "#{text}" | #{@@aspell_path} #{@@aspell_cmdargs}`
     raise 'Aspell command not found' unless result
     new_result = result.split("\n")
     new_result[1..-1] || []
