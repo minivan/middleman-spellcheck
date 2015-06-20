@@ -44,6 +44,39 @@ like to skip:
 activate :spellcheck, ignored_exts: [".xml", ".png"]
 ```
 
+To select a dictionary used by a spellchecker, use lang: option. For
+example, to use Polish dictionary, use:
+
+```ruby
+activate :spellcheck, lang: "pl"
+```
+
+Middleman-spellcheck can issue many warnings if you run it over a new
+content. If you want to give yourself a chance to fix mistakes gradually and
+not fail each time you build, use :dontfail flag:
+
+```ruby
+activate :spellcheck, lang: en, dontfail: 1
+```
+
+Advanced users wishing to invoke Middleman-spellcheck backend (Aspell) with
+a custom command line may find cmdargs: useful. Please note that "-a" is a
+mandatory flag which one must specify in order for middleman-spellcheck to
+work. Other flags are up to the user. See Aspell's man page for more
+details.
+
+```ruby
+activate :spellcheck, cmdargs: "-a -l pl"
+```
+
+For developers interested in extending Middleman-spellcheck and for those
+who encountered issues, useful might be debug: option, which will turn on
+extensive amount of debugging.
+
+```ruby
+activate :spellcheck, debug: 1
+```
+
 ## Contributing
 
 1. Fork it
