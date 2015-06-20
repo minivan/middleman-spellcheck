@@ -11,9 +11,11 @@ module Middleman
       option :ignored_exts, [], "Ignore specific extensions (ex: '.xml')"
       option :lang, "en", "Language for spellchecking"
       option :cmdargs, "", "Pass alternative command line arguments"
+      option :debug, 0, "Enable debugging (for developers only)"
 
       def after_build(builder)
         Spellchecker.cmdargs=(options.cmdargs)
+        Spellchecker.debug_enabled=(options.debug)
         filtered = filter_resources(app, options.page)
         total_misspelled = []
 
