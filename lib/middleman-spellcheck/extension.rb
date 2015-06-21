@@ -9,14 +9,20 @@ module Middleman
       option :tags, [], "Run spellcheck only on some tags from the output"
       option :allow, [], "Allow specific words to be misspelled"
       option :ignored_exts, [], "Ignore specific extensions (ex: '.xml')"
+      option :lang, "en", "Language for spellchecking"
+      option :cmdargs, "", "Pass alternative command line arguments"
+      option :debug, 0, "Enable debugging (for developers only)"
+      option :dontfail, 0, "Don't fail when misspelled words are found"
 
       def after_build(builder)
+        Spellchecker.cmdargs=(options.cmdargs)
+        Spellchecker.debug_enabled=(options.debug)
         filtered = filter_resources(app, options.page)
         total_misspelled = []
 
         filtered.each do |resource|
           builder.say_status :spellcheck, "Running spell checker for #{resource.url}", :blue
-          current_misspelled = run_check(select_content(resource))
+          current_misspelled = run_check(select_content(resource), options.lang)
           current_misspelled.each do |misspell|
             builder.say_status :misspell, error_message(misspell), :red
           end
@@ -24,7 +30,13 @@ module Middleman
         end
 
         unless total_misspelled.empty?
-          raise Thor::Error, "Build failed. There are spelling errors."
+	  estr = "Build failed. There are spelling errors."
+	  if options.dontfail
+	    print "== :dontfail set! Will issue warning only, but not fail.\n"
+	    print estr, "\n"
+	  else
+            raise Thor::Error, estr
+	  end
         end
       end
 
@@ -60,8 +72,8 @@ module Middleman
                              .reject { |resource| option_ignored_exts.include? resource.ext }
       end
 
-      def run_check(text, dictionary="en")
-        results = Spellchecker.check(text, dictionary)
+      def run_check(text, lang)
+        results = Spellchecker.check(text, lang)
         results = exclude_allowed(results)
         results.reject { |entry| entry[:correct] }
       end
