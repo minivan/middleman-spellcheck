@@ -6,7 +6,6 @@ module Middleman
       namespace :spellcheck
       desc "spellcheck FILE", "Run spellcheck on given file or path"
       def spellcheck(*paths)
-        binding.pry
         app = ::Middleman::Application.server.inst
 
         resources = app.sitemap.resources.select{|resource|

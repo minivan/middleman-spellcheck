@@ -47,9 +47,6 @@ class Spellchecker
       val = f.gets.strip()	# skip the Aspell's intro
       sdbg "Expected Aspell intro, got #{val}"
       words.each do |word|
-        if word[0] == "'"
-          word = word[1..-1]
-        end
         sdbg "-> Writing word '#{word}'"
         f.write(word + "\n")
         f.flush
