@@ -16,6 +16,13 @@ Add the following to middleman's `config.rb`:
 
     activate :spellcheck
 
+Spellcheck is run automatically after build, but you can also check individual files and subdirectories:
+
+```
+middleman spellcheck source/about.html
+middleman spellcheck source/blog/
+```
+
 ## Usage
 
 You can spellcheck only some resources using a regex with the URL:
@@ -51,12 +58,20 @@ example, to use Polish dictionary, use:
 activate :spellcheck, lang: "pl"
 ```
 
+If you define the ``lang`` metadata in your pages / articles, then spellcheck will use those language.
+
 Middleman-spellcheck can issue many warnings if you run it over a new
 content. If you want to give yourself a chance to fix mistakes gradually and
 not fail each time you build, use :dontfail flag:
 
 ```ruby
-activate :spellcheck, lang: en, dontfail: 1
+activate :spellcheck, lang: "en", dontfail: 1
+```
+
+You can also disable the automatic spellcheck after build (and only run manual checks from the command line):
+
+```ruby
+activate :spellcheck, run_after_build: false
 ```
 
 Advanced users wishing to invoke Middleman-spellcheck backend (Aspell) with

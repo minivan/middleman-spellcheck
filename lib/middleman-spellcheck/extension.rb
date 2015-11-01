@@ -14,8 +14,10 @@ module Middleman
       option :cmdargs, "", "Pass alternative command line arguments"
       option :debug, 0, "Enable debugging (for developers only)"
       option :dontfail, 0, "Don't fail when misspelled words are found"
+      option :run_after_build, true, "Run Spellcheck after build"
 
       def after_build(builder)
+        return if !options.run_after_build
         Spellchecker.cmdargs=(options.cmdargs)
         Spellchecker.debug_enabled=(options.debug)
         filtered = filter_resources(app, options.page)
