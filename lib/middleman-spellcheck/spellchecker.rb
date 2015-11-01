@@ -47,6 +47,9 @@ class Spellchecker
       val = f.gets.strip()	# skip the Aspell's intro
       sdbg "Expected Aspell intro, got #{val}"
       words.each do |word|
+        if word[0] == "'"
+          word = word[1..-1]
+        end
         sdbg "-> Writing word '#{word}'"
         f.write(word + "\n")
         f.flush
@@ -57,7 +60,7 @@ class Spellchecker
 
         # skip the empty line
         val = f.gets()
-	sdbg "Expected empty line, got '#{val}'"
+        sdbg "Expected empty line, got '#{val}'"
 
         result << word_check_res
       end
@@ -76,8 +79,8 @@ class Spellchecker
     sdbg "self.check got raw text:\n#{text}\n"
 
     words = text.split(/[^A-Za-z']+/).select { |s|
-       s != "" and s != "'s" and s != "'"
-    }
+      s != "" and s != "'s" and s != "'"
+    }.uniq
     sdbg "self.check word array:\n#{words}\n"
 
     results = query(words, lang).map do |query_result|
