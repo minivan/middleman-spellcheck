@@ -57,10 +57,11 @@ class Spellchecker
         # should be * or &
         word_check_res = f.gets.strip()
         sdbg "<- got result '#{word_check_res}'"
-
-        # skip the empty line
-        val = f.gets()
-        sdbg "Expected empty line, got '#{val}'"
+        if word_check_res != ""
+          # skip the empty line
+          val = f.gets()
+          sdbg "Expected empty line, got '#{val}'"
+        end
 
         result << word_check_res
       end

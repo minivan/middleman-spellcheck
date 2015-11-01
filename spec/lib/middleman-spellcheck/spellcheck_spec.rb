@@ -68,4 +68,14 @@ describe Spellchecker do
                         { word: "user", correct: true }]
     end
   end
+
+  context "Unicode" do
+    let(:text) { "café hånk 你好" }
+
+    it "splits correctly on unicode chars, doesnt crash on Chinese chars" do
+      result.should == [{ word: "café", correct: false },
+                        { word: "hånk", correct: false },
+                        { word: "你好", correct: false }]
+    end
+  end
 end
