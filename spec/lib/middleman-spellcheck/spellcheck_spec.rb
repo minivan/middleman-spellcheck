@@ -3,7 +3,7 @@ require_relative '../../../lib/middleman-spellcheck/spellchecker'
 
 describe Spellchecker do
   let(:text)   { "hello, world! of txet" }
-  let(:result) { Spellchecker.check(text) }
+  let(:result) { Spellchecker.check(text, "en") }
 
   context "with one wrong word" do
     it "can spell check words" do
@@ -55,8 +55,17 @@ describe Spellchecker do
 
     it "whitelists the word" do
       result.should == [{ word: "A", correct: true },
-                        { word: "user’s", correct: true },
+                        { word: "user's", correct: true },
                         { word: "page", correct: true }]
+    end
+  end
+
+  context "Bugs" do
+    let(:text) { "'http user" }
+
+    it "don't crash" do
+      result.should == [{ word: "'http", correct: false },
+                        { word: "user", correct: true }]
     end
   end
 end
