@@ -5,18 +5,21 @@ module Middleman
       include Thor::Actions
       namespace :spellcheck
       desc "spellcheck FILE", "Run spellcheck on given file or path"
-      def spellcheck(path)
+      def spellcheck(*paths)
+        binding.pry
         app = ::Middleman::Application.server.inst
 
-        articles = app.blog.articles.select{|article|
-          article.source_file.sub(Dir.pwd,'').sub(%r{^/},'')[/^#{Regexp.escape(path)}/]
+        resources = app.sitemap.resources.select{|resource|
+          paths.any? {|path|
+            resource.source_file.sub(Dir.pwd,'').sub(%r{^/},'')[/^#{Regexp.escape(path)}/]
+          }
         }
-        if articles.empty?
+        if resources.empty?
           $stderr.puts "File / Directory #{path} not exist"
           exit 1
         end
         ext = app.extensions[:spellcheck]
-        articles.each do |resource|
+        resources.each do |resource|
           say_status :spellcheck, "Running spell checker for #{resource.url}", :blue
           current_misspelled = ext.spellcheck_resource(resource)
           current_misspelled.each do |misspell|
