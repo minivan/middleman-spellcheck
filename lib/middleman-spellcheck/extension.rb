@@ -1,4 +1,5 @@
 require 'middleman-spellcheck/spellchecker'
+require 'middleman-spellcheck/cli'
 require 'nokogiri'
 
 module Middleman
@@ -22,7 +23,7 @@ module Middleman
 
         filtered.each do |resource|
           builder.say_status :spellcheck, "Running spell checker for #{resource.url}", :blue
-          current_misspelled = run_check(select_content(resource), options.lang)
+          current_misspelled = spellcheck_resource(resource)
           current_misspelled.each do |misspell|
             builder.say_status :misspell, error_message(misspell), :red
           end
@@ -30,19 +31,20 @@ module Middleman
         end
 
         unless total_misspelled.empty?
-	  estr = "Build failed. There are spelling errors."
-	  if options.dontfail
-	    print "== :dontfail set! Will issue warning only, but not fail.\n"
-	    print estr, "\n"
-	  else
+          estr = "Build failed. There are spelling errors."
+          if options.dontfail
+            print "== :dontfail set! Will issue warning only, but not fail.\n"
+            print estr, "\n"
+          else
             raise Thor::Error, estr
-	  end
+          end
         end
       end
 
       def select_content(resource)
         rendered_resource = resource.render(layout: false)
-        doc = Nokogiri::HTML(rendered_resource)
+        doc = Nokogiri::HTML.fragment(rendered_resource)
+        doc.search('code,style,script').each(&:remove)
 
         if options.tags.empty?
           doc.text
@@ -69,7 +71,19 @@ module Middleman
 
       def filter_resources(app, pattern)
         app.sitemap.resources.select { |resource| resource.url.match(pattern) }
-                             .reject { |resource| option_ignored_exts.include? resource.ext }
+          .reject { |resource| option_ignored_exts.include? resource.ext }
+      end
+
+      def spellcheck_resource(resource)
+        lang =
+          if options.lang.respond_to?(:call)
+            options.lang.call(resource)
+          elsif resource.respond_to?(:lang) and resource.lang
+            resource.lang.to_s
+          else
+            options.lang
+          end
+        run_check(select_content(resource), lang)
       end
 
       def run_check(text, lang)
