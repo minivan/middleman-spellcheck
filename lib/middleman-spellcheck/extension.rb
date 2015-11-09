@@ -85,17 +85,27 @@ module Middleman
           else
             options.lang
           end
-        run_check(select_content(resource), lang)
+        run_check(resource, lang)
       end
 
-      def run_check(text, lang)
+      def run_check(resource, lang)
+        text = select_content(resource)
         results = Spellchecker.check(text, lang)
-        results = exclude_allowed(results)
+        results = exclude_allowed(resource, results)
         results.reject { |entry| entry[:correct] }
       end
 
-      def exclude_allowed(results)
-        results.reject { |entry| option_allowed.include? entry[:word].downcase }
+      def exclude_allowed(resource, results)
+        allowed_words = option_allowed
+        if resource.data.include?("spellcheck-allow") then
+          allowed_tmp = resource.data["spellcheck-allow"]
+          allowed_words += if allowed_tmp.is_a? Array
+                       allowed_tmp
+                     else
+                       [allowed_tmp]
+                     end
+        end
+        results.reject { |entry| allowed_words.include? entry[:word].downcase }
       end
 
       def option_allowed
