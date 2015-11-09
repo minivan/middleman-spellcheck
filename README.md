@@ -43,6 +43,17 @@ If there are some words that you would like to be allowed
 activate :spellcheck, allow: ["Gooby", "pls"]
 ```
 
+You can also add allowed words to the front-matter through the
+`spellcheck-allowed` keyword. Example:
+
+```
+title: "Some time ago"
+...
+spellcheck-allowed:
+- GitHub
+- Linux
+```
+
 Middleman-spellcheck automatically ignores `.css`, `.js`, & `.coffee` file
 extensions. If there are some additional file type extensions that you would
 like to skip:
