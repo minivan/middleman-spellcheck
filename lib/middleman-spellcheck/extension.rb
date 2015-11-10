@@ -96,25 +96,24 @@ module Middleman
       end
 
       def exclude_allowed(resource, results)
-        allowed_words = option_allowed
+        results.reject { |entry| allowed_words(resource).include? entry[:word].downcase }
+      end
+
+      def allowed_words(resource)
+        words_ok = if options.allow.is_a? Array
+                    options.allow
+                  else
+                    [options.allow]
+                  end
         if resource.data.include?("spellcheck-allow") then
           allowed_tmp = resource.data["spellcheck-allow"]
-          allowed_words += if allowed_tmp.is_a? Array
+          words_ok += if allowed_tmp.is_a? Array
                        allowed_tmp
                      else
                        [allowed_tmp]
                      end
         end
-        results.reject { |entry| allowed_words.include? entry[:word].downcase }
-      end
-
-      def option_allowed
-        allowed = if options.allow.is_a? Array
-                    options.allow
-                  else
-                    [options.allow]
-                  end
-        allowed.map(&:downcase)
+        words_ok.map(&:downcase)
       end
 
       def option_ignored_exts
