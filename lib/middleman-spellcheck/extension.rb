@@ -6,9 +6,11 @@ module Middleman
   module Spellcheck
     class SpellcheckExtension < Extension
       REJECTED_EXTS = %w(.css .js .coffee)
+      ALLOWED_WORDS = []
       option :page, "/*", "Run only pages that match the regex through the spellchecker"
       option :tags, [], "Run spellcheck only on some tags from the output"
       option :allow, [], "Allow specific words to be misspelled"
+      option :allow_file, nil, "File with words allowed by the spellchecker"
       option :ignored_exts, [], "Ignore specific extensions (ex: '.xml')"
       option :lang, "en", "Language for spellchecking"
       option :cmdargs, "", "Pass alternative command line arguments"
@@ -105,6 +107,13 @@ module Middleman
                   else
                     [options.allow]
                   end
+          words_ok += allowed_words_frontmatter(resource)
+          words_ok += allowed_words_file
+          words_ok.map(&:downcase)
+      end
+
+      def allowed_words_frontmatter(resource)
+        words_ok = []
         if resource.data.include?("spellcheck-allow") then
           allowed_tmp = resource.data["spellcheck-allow"]
           words_ok += if allowed_tmp.is_a? Array
@@ -113,7 +122,19 @@ module Middleman
                        [allowed_tmp]
                      end
         end
-        words_ok.map(&:downcase)
+        words_ok
+      end
+
+      def allowed_words_file
+        if ALLOWED_WORDS.empty? && options.allow_file != nil
+          lines = File.read(options.allow_file)
+          lines.split("\n").each do |line|
+            next if line =~ /^#/ or line =~ /^$/
+            ALLOWED_WORDS << line.partition('#').first.strip
+          end
+          print "ALLOWED_WORDS: ", ALLOWED_WORDS, "\n"
+        end
+        ALLOWED_WORDS
       end
 
       def option_ignored_exts
