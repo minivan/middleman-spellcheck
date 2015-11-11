@@ -34,7 +34,7 @@ module Middleman
 
         unless total_misspelled.empty?
           estr = "Build failed. There are spelling errors."
-          if options.dontfail
+          if options.dontfail != 0
             print "== :dontfail set! Will issue warning only, but not fail.\n"
             print estr, "\n"
           else
