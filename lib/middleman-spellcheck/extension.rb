@@ -132,7 +132,6 @@ module Middleman
             next if line =~ /^#/ or line =~ /^$/
             ALLOWED_WORDS << line.partition('#').first.strip
           end
-          print "ALLOWED_WORDS: ", ALLOWED_WORDS, "\n"
         end
         ALLOWED_WORDS
       end
