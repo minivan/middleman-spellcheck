@@ -10,7 +10,6 @@ module Middleman
       option :page, "/*", "Run only pages that match the regex through the spellchecker"
       option :tags, [], "Run spellcheck only on some tags from the output"
       option :allow, [], "Allow specific words to be misspelled"
-      option :allow_file, nil, "File with words allowed by the spellchecker"
       option :ignored_exts, [], "Ignore specific extensions (ex: '.xml')"
       option :lang, "en", "Language for spellchecking"
       option :cmdargs, "", "Pass alternative command line arguments"
@@ -126,8 +125,12 @@ module Middleman
       end
 
       def allowed_words_file
-        if ALLOWED_WORDS.empty? && options.allow_file != nil
-          lines = File.read(options.allow_file)
+        allow_file = nil
+        if app.config.defines_setting?(:spellcheck_allow_file)
+          allow_file = app.config[:spellcheck_allow_file]
+        end
+        if ALLOWED_WORDS.empty? && allow_file != nil
+          lines = File.read(allow_file)
           lines.split("\n").each do |line|
             next if line =~ /^#/ or line =~ /^$/
             ALLOWED_WORDS << line.partition('#').first.strip
