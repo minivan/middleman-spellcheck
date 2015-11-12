@@ -142,7 +142,7 @@ This will pull up simple CLI menu and for each misspelled word, you'll have
 a following choice
 
 | Key to press | Effect |
-+--------------+--------|
+|--------------|--------|
 | g | Add the word to the `spellcheck_allow_file` |
 | f | Add the word to this article's front-matter |
 | i | Ignore the word for now and deal with it later |
