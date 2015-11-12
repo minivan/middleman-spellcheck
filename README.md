@@ -54,6 +54,9 @@ spellcheck-allowed:
 - Linux
 ```
 
+Look into section "Fixing spelling mistakes" to help yourself with fixing
+spelling problems in already existing articles.
+
 Middleman-spellcheck automatically ignores `.css`, `.js`, & `.coffee` file
 extensions. If there are some additional file type extensions that you would
 like to skip:
@@ -102,6 +105,54 @@ extensive amount of debugging.
 ```ruby
 activate :spellcheck, debug: 1
 ```
+
+## Fixing spelling mistakes
+
+The `middleman-spellchecker` extension is likely to generate large number
+of false-positives, e.g.: words which the spellchecker will consider
+incorrect (not present in a dictionary), which yet may have a valid meaning
+in the article's context. Common problems are acronyms, technical terms and
+names. To solve this, `middleman-spellcheck` offers two solutions:
+
+1. The `spellcheck_allow_file` file, which points to the path with a file
+containing words considered correct. Author of the website may decide which
+words are allowed to be used site-wide. Example: if you write a lot about
+IBM products, this file would have names such as "IBM", "AIX" or "DB/2".
+
+2. The `spellcheck-allow` keyword in a frontmatter, which will work in the
+context of this particular article, but not other articles. Example: your
+blog is about IBM, but 1 article is about AirBnB. You'd put `AirBnB` into
+your front-matter.
+
+To set the global file, use the following clause in your `config.rb`:
+
+	set :spellcheck_allow_file, "./data/words_allowed.txt"
+
+To use 2nd solution, add the following to your frontmatter:
+
+	spellcheck-allow:
+	- "AirBnB"
+
+The `middleman-spellcheck` also comes with a simple CLI for fixing many
+problems in your articles. To invoke:
+
+	middleman spellcheck source/blog/2015-11-01-nginx-on-travis-ci.md --fix
+
+This will pull up simple CLI menu and for each misspelled word, you'll have
+a following choice
+
+| Key to press | Effect |
++--------------+--------|
+| g | Add the word to the `spellcheck_allow_file` |
+| f | Add the word to this article's front-matter |
+| i | Ignore the word for now and deal with it later |
+
+
+After the run is finished, `middleman-spellchecker` will write a fixed file
+to `source/blog/2015-11-01-nginx-on-travis-ci.md.fixed`. This is a safe
+choice for not creating damage. If you don't want to fiddle with it, the
+`--inplace` switch will make changes dynamically, and the input file will
+get overwritten.
 
 ## Contributing
 
