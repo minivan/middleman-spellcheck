@@ -55,7 +55,7 @@ module Middleman
             end
           end
           fixed.close()
-          print "Fixed spellchecked file written to #{fn_fixed}"
+          print "Fixed spellchecked file written to #{fn_fixed}\n"
         end
       }
 
