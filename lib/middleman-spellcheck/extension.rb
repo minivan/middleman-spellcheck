@@ -46,7 +46,9 @@ module Middleman
       def select_content(resource)
         rendered_resource = resource.render(layout: false)
         doc = Nokogiri::HTML.fragment(rendered_resource)
+
         doc.search('code,style,script').each(&:remove)
+        doc.search('table[@class = "CodeRay"]').each(&:remove)
 
         if options.tags.empty?
           doc.text
