@@ -38,13 +38,19 @@ module Middleman
           fn_fixed = "#{resource.source_file}#{fn_ext}"
           fixed = File.open(fn_fixed, "w")
           sep_tag_cnt = 0
+          had_spellcheck_tag = false
           data.each_line do |line|
             if line =~ /^\-\-\-$/ then
               sep_tag_cnt += 1
             end
+            if line =~ /spellcheck-allow:/ then
+              had_spellcheck_tag = true
+            end
 
             if sep_tag_cnt == 2 then
-              fixed.puts "spellcheck-allow:\n"
+              if had_spellcheck_tag == false then
+                fixed.puts "spellcheck-allow:\n"
+              end
               words_allow_frontmatter.each do |w|
                 fixed.puts "- \"#{w}\"\n"
               end
