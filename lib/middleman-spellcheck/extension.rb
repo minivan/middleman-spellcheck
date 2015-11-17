@@ -106,9 +106,9 @@ module Middleman
                   else
                     [options.allow]
                   end
-          words_ok += allowed_words_frontmatter(resource)
-          words_ok += allowed_words_file
-          words_ok.map(&:downcase)
+        words_ok += allowed_words_frontmatter(resource)
+        words_ok += allowed_words_file
+        words_ok.map(&:downcase)
       end
 
       def allowed_words_frontmatter(resource)
