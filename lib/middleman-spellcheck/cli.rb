@@ -1,6 +1,6 @@
 module Middleman
   module Cli
-    # This class provides an "spellchecl" command for the middleman CLI.
+    # This class provides a "spellcheck" command for the middleman CLI.
     class Spellcheck < Thor
       include Thor::Actions
 
