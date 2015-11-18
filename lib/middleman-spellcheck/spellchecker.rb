@@ -72,8 +72,11 @@ class Spellchecker
   end
 
   def self.check(text, lang)
+    # Do not check words set off in single quotes
+    text.gsub! /\s'\w*'(\s|\.|,)/, ' '
     # do ’ -> ' for aspell. Otherwise 's' is passed as a word to aspell.
     text.gsub! '’', '\''
+
     sdbg "self.check got raw text:\n#{text}\n"
 
     words = text.split(/[^\p{L}']+/).select { |s|
