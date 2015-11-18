@@ -6,6 +6,7 @@ module Middleman
   module Spellcheck
     class SpellcheckExtension < Extension
       REJECTED_EXTS = %w(.css .js .coffee)
+      ALLOWED_WORDS = []
       option :page, "/*", "Run only pages that match the regex through the spellchecker"
       option :tags, [], "Run spellcheck only on some tags from the output"
       option :allow, [], "Allow specific words to be misspelled"
@@ -34,7 +35,7 @@ module Middleman
 
         unless total_misspelled.empty?
           estr = "Build failed. There are spelling errors."
-          if options.dontfail
+          if options.dontfail != 0
             print "== :dontfail set! Will issue warning only, but not fail.\n"
             print estr, "\n"
           else
@@ -85,26 +86,57 @@ module Middleman
           else
             options.lang
           end
-        run_check(select_content(resource), lang)
+        run_check(resource, lang)
       end
 
-      def run_check(text, lang)
+      def run_check(resource, lang)
+        text = select_content(resource)
         results = Spellchecker.check(text, lang)
-        results = exclude_allowed(results)
+        results = exclude_allowed(resource, results)
         results.reject { |entry| entry[:correct] }
       end
 
-      def exclude_allowed(results)
-        results.reject { |entry| option_allowed.include? entry[:word].downcase }
+      def exclude_allowed(resource, results)
+        results.reject { |entry| allowed_words(resource).include? entry[:word].downcase }
       end
 
-      def option_allowed
-        allowed = if options.allow.is_a? Array
+      def allowed_words(resource)
+        words_ok = if options.allow.is_a? Array
                     options.allow
                   else
                     [options.allow]
                   end
-        allowed.map(&:downcase)
+        words_ok += allowed_words_frontmatter(resource)
+        words_ok += allowed_words_file
+        words_ok.map(&:downcase)
+      end
+
+      def allowed_words_frontmatter(resource)
+        words_ok = []
+        if resource.data.include?("spellcheck-allow") then
+          allowed_tmp = resource.data["spellcheck-allow"]
+          words_ok += if allowed_tmp.is_a? Array
+                       allowed_tmp
+                     else
+                       [allowed_tmp]
+                     end
+        end
+        words_ok
+      end
+
+      def allowed_words_file
+        allow_file = nil
+        if app.config.defines_setting?(:spellcheck_allow_file)
+          allow_file = app.config[:spellcheck_allow_file]
+        end
+        if ALLOWED_WORDS.empty? && allow_file != nil
+          lines = File.read(allow_file)
+          lines.split("\n").each do |line|
+            next if line =~ /^#/ or line =~ /^$/
+            ALLOWED_WORDS << line.partition('#').first.strip
+          end
+        end
+        ALLOWED_WORDS
       end
 
       def option_ignored_exts
