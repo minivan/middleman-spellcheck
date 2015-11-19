@@ -25,39 +25,21 @@ middleman spellcheck source/blog/
 
 ## Usage
 
-You can spellcheck only some resources using a regex with the URL:
+There are several ways to select what content will be checked.
+
+1. You can spellcheck only some resources using a regex with the URL:
 
 ```ruby
 activate :spellcheck, page: "documentation/*" # you can use regexes, too, e.g. /post_[1-9]/
 ```
 
-You can limit which tags the spell checker will only run through:
+2. You can limit which tags the spell checker will only run through
 
 ```ruby
 activate :spellcheck, tags: :p  # pass an array of tags if you have more!
 ```
 
-If there are some words that you would like to be allowed
-
-```ruby
-activate :spellcheck, allow: ["Gooby", "pls"]
-```
-
-You can also add allowed words to the front-matter through the
-`spellcheck-allowed` keyword. Example:
-
-```
-title: "Some time ago"
-...
-spellcheck-allowed:
-- GitHub
-- Linux
-```
-
-Look into section "Fixing spelling mistakes" to help yourself with fixing
-spelling problems in already existing articles.
-
-Middleman-spellcheck automatically ignores `.css`, `.js`, & `.coffee` file
+3. Middleman-spellcheck automatically ignores `.css`, `.js`, & `.coffee` file
 extensions. If there are some additional file type extensions that you would
 like to skip:
 
@@ -74,12 +56,15 @@ activate :spellcheck, lang: "pl"
 
 If you define the ``lang`` metadata in your pages / articles, then spellcheck will use those language.
 
-Middleman-spellcheck can issue many warnings if you run it over a new
-content. If you want to give yourself a chance to fix mistakes gradually and
-not fail each time you build, use :dontfail flag:
+## Options
+
+
+For warnings only (allow build to pass), use `dontfail` option.
+This is helpful when you want to give yourself a chance to fix mistakes or false hits gradually and
+not fail each time you build.
 
 ```ruby
-activate :spellcheck, lang: "en", dontfail: 1
+activate :spellcheck, dontfail: 1
 ```
 
 You can also disable the automatic spellcheck after build (and only run manual checks from the command line):
@@ -103,10 +88,22 @@ who encountered issues, useful might be debug: option, which will turn on
 extensive amount of debugging.
 
 ```ruby
-activate :spellcheck, debug: 1
+activate :spellcheck, lang: "en", debug: 1
 ```
 
-## Fixing spelling mistakes
+If there are some words that you would like to be allowed you can pass them to the allow option as an array. **Depricated - Please see the "Fixing spelling mistakes" section for now prefered way to include allowed words
+
+```ruby
+activate :spellcheck, allow: ["Gooby", "pls"]
+```
+
+You can also pass a regex to the `ignore_regex` option. Any match will be ignored.
+For example to remove words in quotes
+```ruby
+activate :spellcheck, lang: "en", ignore_regex: /\s('|")\w*('|")(\s|\.|,)/
+```
+
+## Fixing spelling mistakes & false positives
 
 The `middleman-spellchecker` extension is likely to generate large number
 of false-positives, e.g.: words which the spellchecker will consider
@@ -119,24 +116,38 @@ containing words considered correct. Author of the website may decide which
 words are allowed to be used site-wide. Example: if you write a lot about
 IBM products, this file would have names such as "IBM", "AIX" or "DB/2".
 
+To set the global file, use the following clause in your `config.rb`:
+
+```set :spellcheck_allow_file, "./data/words_allowed.txt"```
+
 2. The `spellcheck-allow` keyword in a frontmatter, which will work in the
 context of this particular article, but not other articles. Example: your
 blog is about IBM, but 1 article is about AirBnB. You'd put `AirBnB` into
 your front-matter.
 
-To set the global file, use the following clause in your `config.rb`:
-
-	set :spellcheck_allow_file, "./data/words_allowed.txt"
 
 To use 2nd solution, add the following to your frontmatter:
 
-	spellcheck-allow:
-	- "AirBnB"
+```
+title: "Blog about IBM"
+...
+spellcheck-allow:
+- "AirBnB"```
+
+Another example
+
+```
+title: "Some time ago"
+...
+spellcheck-allowed:
+- GitHub
+- Linux
+```
 
 The `middleman-spellcheck` also comes with a simple CLI for fixing many
 problems in your articles. To invoke:
 
-	middleman spellcheck source/blog/2015-11-01-nginx-on-travis-ci.md --fix
+```middleman spellcheck source/blog/2015-11-01-nginx-on-travis-ci.md --fix```
 
 This will pull up simple CLI menu and for each misspelled word, you'll have
 a following choice

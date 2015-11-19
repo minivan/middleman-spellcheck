@@ -11,6 +11,7 @@ module Middleman
       option :tags, [], "Run spellcheck only on some tags from the output"
       option :allow, [], "Allow specific words to be misspelled"
       option :ignored_exts, [], "Ignore specific extensions (ex: '.xml')"
+      option :ignore_regex, false, "Ignore regex matches"
       option :lang, "en", "Language for spellchecking"
       option :cmdargs, "", "Pass alternative command line arguments"
       option :debug, 0, "Enable debugging (for developers only)"
@@ -57,6 +58,14 @@ module Middleman
         end
       end
 
+      def regex_filter_content(text)
+        if options.ignore_regex
+          text.to_s.gsub options.ignore_regex , ' '
+        else
+          text
+        end
+      end
+
       def option_tags
         if options.tags.is_a? Array
           options.tags
@@ -92,6 +101,7 @@ module Middleman
 
       def run_check(resource, lang)
         text = select_content(resource)
+        text = regex_filter_content(text)
         results = Spellchecker.check(text, lang)
         results = exclude_allowed(resource, results)
         results.reject { |entry| entry[:correct] }
