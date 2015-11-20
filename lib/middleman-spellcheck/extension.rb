@@ -12,6 +12,7 @@ module Middleman
       option :allow, [], "Allow specific words to be misspelled"
       option :ignored_exts, [], "Ignore specific extensions (ex: '.xml')"
       option :ignore_regex, false, "Ignore regex matches"
+      option :ignore_selector, false, "Ignore nodes with a css selector"
       option :lang, "en", "Language for spellchecking"
       option :cmdargs, "", "Pass alternative command line arguments"
       option :debug, 0, "Enable debugging (for developers only)"
@@ -50,6 +51,10 @@ module Middleman
         rendered_resource = resource.render(layout: false)
         doc = Nokogiri::HTML.fragment(rendered_resource)
         doc.search('code,style,script').each(&:remove)
+
+        if options.ignore_selector
+          doc.css(options.ignore_selector).each(&:remove)
+        end
 
         if options.tags.empty?
           doc.text

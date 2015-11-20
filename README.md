@@ -27,25 +27,48 @@ middleman spellcheck source/blog/
 
 There are several ways to select what content will be checked.
 
-1. You can spellcheck only some resources using a regex with the URL:
+1. To spellcheck only some resources using a regex with the URL:
 
-```ruby
-activate :spellcheck, page: "documentation/*" # you can use regexes, too, e.g. /post_[1-9]/
-```
+    ```ruby
+    activate :spellcheck, page: "documentation/*" # you can use regexes, too, e.g. /post_[1-9]/
+    ```
 
-2. You can limit which tags the spell checker will only run through
+2. To limit which tags the spell checker will only run through:
 
-```ruby
-activate :spellcheck, tags: :p  # pass an array of tags if you have more!
-```
+    ```ruby
+    activate :spellcheck, tags: :p  # pass an array of tags if you have more!
+    ```
 
-3. Middleman-spellcheck automatically ignores `.css`, `.js`, & `.coffee` file
+3. To ignore sections by using css selectors
+    For example, to ignore all sections with a class of `CodeRay`:
+
+    ```ruby
+    activate :spellcheck, ignore_selector: '.CodeRay'
+    ```
+
+    Or to ignore all tables in a document:
+
+    ```ruby
+    activate :spellcheck, ignore_selector: 'table'
+    ```
+
+    Or to ignore all `<p class="technical-jargon">`:
+    ```ruby
+    activate :spellcheck, ignore_selector: 'p.technical-jargon'
+    ```
+
+    To ignore multiple selectors, seperate them with a comma
+    ```ruby
+    activate :spellcheck, ignore_selector: 'p.technical-jargon, .CodeRay'
+    ```
+
+4. Middleman-spellcheck automatically ignores `.css`, `.js`, & `.coffee` file
 extensions. If there are some additional file type extensions that you would
 like to skip:
 
-```ruby
-activate :spellcheck, ignored_exts: [".xml", ".png"]
-```
+    ```ruby
+    activate :spellcheck, ignored_exts: [".xml", ".png"]
+    ```
 
 To select a dictionary used by a spellchecker, use lang: option. For
 example, to use Polish dictionary, use:
@@ -118,7 +141,7 @@ IBM products, this file would have names such as "IBM", "AIX" or "DB/2".
 
 To set the global file, use the following clause in your `config.rb`:
 
-```set :spellcheck_allow_file, "./data/words_allowed.txt"```
+    ```set :spellcheck_allow_file, "./data/words_allowed.txt"```
 
 2. The `spellcheck-allow` keyword in a frontmatter, which will work in the
 context of this particular article, but not other articles. Example: your
@@ -128,26 +151,26 @@ your front-matter.
 
 To use 2nd solution, add the following to your frontmatter:
 
-```
-title: "Blog about IBM"
-...
-spellcheck-allow:
-- "AirBnB"```
-
-Another example
-
-```
-title: "Some time ago"
-...
-spellcheck-allowed:
-- GitHub
-- Linux
-```
+    ```
+    title: "Blog about IBM"
+    ...
+    spellcheck-allow:
+    - "AirBnB"```
+    
+    Another example
+    
+    ```
+    title: "Some time ago"
+    ...
+    spellcheck-allowed:
+    - GitHub
+    - Linux
+    ```
 
 The `middleman-spellcheck` also comes with a simple CLI for fixing many
 problems in your articles. To invoke:
 
-```middleman spellcheck source/blog/2015-11-01-nginx-on-travis-ci.md --fix```
+    ```middleman spellcheck source/blog/2015-11-01-nginx-on-travis-ci.md --fix```
 
 This will pull up simple CLI menu and for each misspelled word, you'll have
 a following choice
