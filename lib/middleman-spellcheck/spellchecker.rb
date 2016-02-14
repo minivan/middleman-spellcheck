@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class Spellchecker
   @@aspell_path = "aspell"
   @@aspell_cmdargs = ""
@@ -76,7 +78,8 @@ class Spellchecker
     text.gsub! '’', '\''
     sdbg "self.check got raw text:\n#{text}\n"
 
-    words = text.split(/[^\p{L}']+/).select { |s|
+    #Split words and 
+    words = text.split(/'?[^\p{L}']+'?/).select { |s|
       s != "" and s != "'s" and s != "'"
     }.uniq
     sdbg "self.check word array:\n#{words}\n"
