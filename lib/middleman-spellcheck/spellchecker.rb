@@ -76,7 +76,7 @@ class Spellchecker
     text.gsub! '’', '\''
     sdbg "self.check got raw text:\n#{text}\n"
 
-    words = text.split(/[^\p{L}']+/).select { |s|
+    words = text.split(/'?[^\p{L}']+'?/).select { |s|
       s != "" and s != "'s" and s != "'"
     }.uniq
     sdbg "self.check word array:\n#{words}\n"
