@@ -11,6 +11,8 @@ module Middleman
       option :tags, [], "Run spellcheck only on some tags from the output"
       option :allow, [], "Allow specific words to be misspelled"
       option :ignored_exts, [], "Ignore specific extensions (ex: '.xml')"
+      option :ignore_regex, false, "Ignore regex matches"
+      option :ignore_selector, false, "Ignore nodes with a css selector"
       option :lang, "en", "Language for spellchecking"
       option :cmdargs, "", "Pass alternative command line arguments"
       option :debug, 0, "Enable debugging (for developers only)"
@@ -50,10 +52,22 @@ module Middleman
         doc = Nokogiri::HTML.fragment(rendered_resource)
         doc.search('code,style,script').each(&:remove)
 
+        if options.ignore_selector
+          doc.css(options.ignore_selector).each(&:remove)
+        end
+
         if options.tags.empty?
           doc.text
         else
           select_tagged_content(doc, option_tags)
+        end
+      end
+
+      def regex_filter_content(text)
+        if options.ignore_regex
+          text.to_s.gsub options.ignore_regex , ' '
+        else
+          text
         end
       end
 
@@ -92,6 +106,7 @@ module Middleman
 
       def run_check(resource, lang)
         text = select_content(resource)
+        text = regex_filter_content(text)
         results = Spellchecker.check(text, lang)
         results = exclude_allowed(resource, results)
         results.reject { |entry| entry[:correct] }
