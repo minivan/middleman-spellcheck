@@ -18,6 +18,7 @@ module Middleman
       option :debug, 0, "Enable debugging (for developers only)"
       option :dontfail, false, "Don't fail because misspelled words are found"
       option :run_after_build, true, "Run Spellcheck after build"
+      option :ignored_dirs, [], "Ignore specific directories"
 
       def after_build(builder)
         return if !options.run_after_build
@@ -90,6 +91,7 @@ module Middleman
       def filter_resources(app, pattern)
         app.sitemap.resources.select { |resource| resource.url.match(pattern) }
           .reject { |resource| option_ignored_exts.include? resource.ext }
+          .reject { |resource| option_ignored_dirs =~ resource.path }
       end
 
       def spellcheck_resource(resource)
@@ -162,6 +164,12 @@ module Middleman
                          [options.ignored_exts]
                        end
         REJECTED_EXTS + ignored_exts
+      end
+
+      def option_ignored_dirs
+        if options.ignored_dirs.any?
+          Regexp.new(options.ignored_dirs.join("|"))
+        end
       end
 
       def error_message(misspell)
