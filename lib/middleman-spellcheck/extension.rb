@@ -51,6 +51,7 @@ module Middleman
         rendered_resource = resource.render(layout: false)
         doc = Nokogiri::HTML.fragment(rendered_resource)
         doc.search('code,style,script').each(&:remove)
+        doc.css("br").each { |node| node.replace("\n") }
 
         if options.ignore_selector
           doc.css(options.ignore_selector).each(&:remove)
