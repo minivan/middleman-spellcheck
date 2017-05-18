@@ -1,1 +1,1 @@
-activate :spellcheck, page: "[^no_]check/*"
+activate :spellcheck, page: "(?<!no_)check"
